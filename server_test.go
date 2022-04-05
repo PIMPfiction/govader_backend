@@ -28,7 +28,7 @@ func TestHandler_HandleGetRequest(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			"Successs",
+			"Success",
 			Handler{analyzer: govader.NewSentimentIntensityAnalyzer()},
 			false,
 		},
@@ -40,7 +40,7 @@ func TestHandler_HandleGetRequest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.name == "Successs" {
+			if tt.name == "Success" {
 				httpRecorder := httptest.NewRecorder()
 				router := echo.New()
 				router.GET("/", tt.h.HandleGetRequest)
@@ -84,7 +84,7 @@ func TestHandler_HandlePostRequest(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			"Successs",
+			"Success",
 			Handler{analyzer: govader.NewSentimentIntensityAnalyzer()},
 			false,
 		},
@@ -96,7 +96,7 @@ func TestHandler_HandlePostRequest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.name == "Successs" {
+			if tt.name == "Success" {
 				httpRecorder := httptest.NewRecorder()
 				router := echo.New()
 				router.POST("/", tt.h.HandlePostRequest)
