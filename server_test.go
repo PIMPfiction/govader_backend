@@ -105,14 +105,14 @@ func TestHandler_HandlePostRequest(t *testing.T) {
 				assert.NoError(t, err)
 				router.ServeHTTP(httpRecorder, request)
 				assert.Equal(t, http.StatusOK, httpRecorder.Code)
-				var response ResponseType
+				var response map[string]interface{}
 				body, err := ioutil.ReadAll(httpRecorder.Result().Body)
 				if err != nil {
 					t.Error(err)
 				}
 				fmt.Print(string(body))
 				_ = json.Unmarshal(body, &response)
-				assert.Equal(t, 1, 1)
+				assert.Equal(t, response["error"], "{'text':'required'}")
 			}
 			if tt.name == "Missing text" {
 				httpRecorder := httptest.NewRecorder()
