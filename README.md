@@ -2,6 +2,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/PIMPfiction/govader_backend.svg)](https://pkg.go.dev/github.com/PIMPfiction/govader_backend)
 [![Go Report Card](https://goreportcard.com/badge/github.com/PIMPfiction/govader_backend)](https://goreportcard.com/report/github.com/PIMPfiction/govader_backend)
+[![codecov](https://codecov.io/gh/PIMPfiction/govader_backend/branch/master/graph/badge.svg?token=3KEBD30Q95)](https://codecov.io/gh/PIMPfiction/govader_backend)
 
 Govader-Backend is based on GoVader Package[https://github.com/jonreiter/govader](https://github.com/jonreiter/govader)
 
