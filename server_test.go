@@ -3,7 +3,6 @@ package govader_backend
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -100,8 +99,11 @@ func TestHandler_HandlePostRequest(t *testing.T) {
 				httpRecorder := httptest.NewRecorder()
 				router := echo.New()
 				router.POST("/", tt.h.HandlePostRequest)
-				requestBody := bytes.NewBuffer([]byte(`{"text": "I am happy"}`))
-				request, err := http.NewRequest("POST", "/", requestBody)
+				reqBody := map[string]string{"text": "I am happy"}
+				jsonValue, _ := json.Marshal(reqBody)
+				//requestBody := bytes.NewBuffer([]byte(`{"text": "I am happy"}`))
+				request, err := http.NewRequest("POST", "/", bytes.NewBuffer(jsonValue))
+				request.Header.Add("Content-Type", "application/json")
 				assert.NoError(t, err)
 				router.ServeHTTP(httpRecorder, request)
 				assert.Equal(t, http.StatusOK, httpRecorder.Code)
@@ -110,9 +112,8 @@ func TestHandler_HandlePostRequest(t *testing.T) {
 				if err != nil {
 					t.Error(err)
 				}
-				fmt.Print(string(body))
 				_ = json.Unmarshal(body, &response)
-				assert.Equal(t, response["error"], "{'text':'required'}")
+				assert.Equal(t, response["Negative"], 0.0)
 			}
 			if tt.name == "Missing text" {
 				httpRecorder := httptest.NewRecorder()
@@ -129,7 +130,7 @@ func TestHandler_HandlePostRequest(t *testing.T) {
 					t.Error(err)
 				}
 				_ = json.Unmarshal(body, &response)
-				assert.Equal(t, response["error"], "{'text':'required'}")
+				assert.Equal(t, response["error"], "text required")
 			}
 		})
 	}

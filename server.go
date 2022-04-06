@@ -2,8 +2,6 @@ package govader_backend
 
 //5 minutes
 import (
-	"fmt"
-
 	"github.com/jonreiter/govader"
 	echo "github.com/labstack/echo/v4"
 )
@@ -31,9 +29,9 @@ func (h Handler) HandleGetRequest(c echo.Context) error {
 func (h Handler) HandlePostRequest(c echo.Context) error {
 	request := new(RequestType)
 	c.Bind(request)
-	fmt.Print(&request)
+
 	if request.Text == "" {
-		return c.JSON(400, map[string]string{"error": "{'text':'required'}"})
+		return c.JSON(400, map[string]string{"error": "text required"})
 	}
 	score := h.analyzer.PolarityScores(request.Text)
 	return c.JSON(200, score)
