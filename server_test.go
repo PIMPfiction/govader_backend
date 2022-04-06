@@ -148,6 +148,7 @@ func TestServe(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			go Serve(tt.args.portNumber)
 			//Serve(tt.args.portNumber)
 			//TODO: Write this tester when you have time
 			assert.Equal(t, 1, 1)
