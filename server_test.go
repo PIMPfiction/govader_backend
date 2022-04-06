@@ -135,3 +135,22 @@ func TestHandler_HandlePostRequest(t *testing.T) {
 		})
 	}
 }
+
+func TestServe(t *testing.T) {
+	type args struct {
+		portNumber string
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{"success", args{"8080"}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			//Serve(tt.args.portNumber)
+			//TODO: Write this tester when you have time
+			assert.Equal(t, 1, 1)
+		})
+	}
+}
