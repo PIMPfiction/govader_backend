@@ -37,12 +37,12 @@ func (h Handler) HandlePostRequest(c echo.Context) error {
 	return c.JSON(200, score)
 }
 
-func Serve() {
+func Serve(portNumber string) {
 	e := echo.New()
 	handler := Handler{
 		analyzer: govader.NewSentimentIntensityAnalyzer(),
 	}
 	e.GET("/", handler.HandleGetRequest)
 	e.POST("/", handler.HandlePostRequest)
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(":" + portNumber))
 }
