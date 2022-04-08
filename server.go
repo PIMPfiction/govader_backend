@@ -2,6 +2,9 @@ package govader_backend
 
 //5 minutes
 import (
+	"sync"
+	"time"
+
 	"github.com/jonreiter/govader"
 	echo "github.com/labstack/echo/v4"
 )
@@ -37,12 +40,32 @@ func (h Handler) HandlePostRequest(c echo.Context) error {
 	return c.JSON(200, score)
 }
 
-func Serve(portNumber string) {
-	e := echo.New()
+func (h Handler) HandleHealthCheck(c echo.Context) error {
+	return c.JSON(200, map[string]string{"status": "ok"})
+}
+
+func Serve(e *echo.Echo, portNumber string) error {
 	handler := Handler{
 		analyzer: govader.NewSentimentIntensityAnalyzer(),
 	}
 	e.GET("/", handler.HandleGetRequest)
 	e.POST("/", handler.HandlePostRequest)
-	e.Logger.Fatal(e.Start(":" + portNumber))
+	e.GET("/health", handler.HandleHealthCheck)
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+	var errCh chan error
+	go func() {
+		err := e.Start(":" + portNumber)
+		if err != nil {
+			errCh <- err
+			wg.Done()
+		}
+	}()
+	time.Sleep(3 * time.Second)
+	select {
+	case err := <-errCh:
+		return err
+	default:
+		return nil
+	}
 }

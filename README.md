@@ -18,10 +18,18 @@ package main
 
 import (
 	"github.com/PIMPfiction/govader_backend"
+	echo "github.com/labstack/echo/v4"
+	"fmt"
 )
 
 func main() {
-	govader_backend.Serve("8080")
+	e := echo.New()
+	err := Serve(e, "8080")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Scanln()
+
 }
 
 ```
