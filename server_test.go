@@ -2,11 +2,15 @@ package govader_backend
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/jonreiter/govader"
 	echo "github.com/labstack/echo/v4"
@@ -144,14 +148,60 @@ func TestServe(t *testing.T) {
 		name string
 		args args
 	}{
-		{"success", args{"8080"}},
+		{"success", args{":8080"}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			go Serve(tt.args.portNumber)
-			//Serve(tt.args.portNumber)
-			//TODO: Write this tester when you have time
-			assert.Equal(t, 1, 1)
+			errCh := make(chan error)
+			e := echo.New()
+			e.GET(
+				"/health",
+				func(c echo.Context) error {
+					return c.JSON(http.StatusOK, "OK")
+				},
+			)
+			go func() {
+				errCh <- e.Start("localhost" + tt.args.portNumber)
+			}()
+			err := waitForServerStart(e, errCh, false)
+			assert.NoError(t, err)
+			httpRecorder := httptest.NewRecorder()
+			router := e
+			request, err := http.NewRequest("GET", "/health", nil)
+			assert.NoError(t, err)
+			router.ServeHTTP(httpRecorder, request)
+			assert.Equal(t, http.StatusOK, httpRecorder.Code)
+			assert.NoError(t, e.Close())
 		})
+	}
+}
+
+func waitForServerStart(e *echo.Echo, errChan <-chan error, isTLS bool) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
+	defer cancel()
+
+	ticker := time.NewTicker(5 * time.Millisecond)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-ticker.C:
+			var addr net.Addr
+			if isTLS {
+				addr = e.TLSListenerAddr()
+			} else {
+				addr = e.ListenerAddr()
+			}
+			if addr != nil && strings.Contains(addr.String(), ":") {
+				return nil // was started
+			}
+		case err := <-errChan:
+			if err == http.ErrServerClosed {
+				return nil
+			}
+			return err
+		}
 	}
 }
