@@ -145,50 +145,36 @@ func TestServe(t *testing.T) {
 		args args
 	}{
 		{"success", Handler{analyzer: govader.NewSentimentIntensityAnalyzer()}, args{portNumber: "8080"}},
+		{"fail", Handler{analyzer: govader.NewSentimentIntensityAnalyzer()}, args{portNumber: "8080"}},
 	}
 	for _, tt := range tests {
-		//TODO: Fix this test, echo.start blocks forever so fidn a way to check if it is working
 		t.Run(tt.name, func(t *testing.T) {
-			e := echo.New()
-			err := Serve(e, tt.args.portNumber)
-			if err != nil {
-				t.Error(err)
+			if tt.name == "success" {
+				e := echo.New()
+				err := Serve(e, tt.args.portNumber)
+				if err != nil {
+					t.Error(err)
+				}
+				e.Listener.Close()
+				assert.Equal(t, 1, 1)
 			}
-			e.Listener.Close()
-			assert.Equal(t, 1, 1)
+			if tt.name == "fail" {
+				e1 := echo.New()
+				err1 := Serve(e1, tt.args.portNumber)
+				if err1 != nil {
+					t.Error(err1)
+				}
+				e2 := echo.New()
+				err2 := Serve(e2, tt.args.portNumber)
+				if err2 != nil {
+					assert.Equal(t, 1, 1)
+				}
+				e1.Listener.Close()
+			}
+
 		})
 	}
 }
-
-// func waitForServerStart(e *echo.Echo, errChan <-chan error, isTLS bool) error {
-// 	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Millisecond)
-// 	defer cancel()
-
-// 	ticker := time.NewTicker(5 * time.Millisecond)
-// 	defer ticker.Stop()
-
-// 	for {
-// 		select {
-// 		case <-ctx.Done():
-// 			return ctx.Err()
-// 		case <-ticker.C:
-// 			var addr net.Addr
-// 			if isTLS {
-// 				addr = e.TLSListenerAddr()
-// 			} else {
-// 				addr = e.ListenerAddr()
-// 			}
-// 			if addr != nil && strings.Contains(addr.String(), ":") {
-// 				return nil // was started
-// 			}
-// 		case err := <-errChan:
-// 			if err == http.ErrServerClosed {
-// 				return nil
-// 			}
-// 			return err
-// 		}
-// 	}
-// }
 
 func TestHandler_HandleHealthCheck(t *testing.T) {
 	type args struct {
