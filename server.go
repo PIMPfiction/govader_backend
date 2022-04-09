@@ -1,6 +1,5 @@
 package govader_backend
 
-//5 minutes
 import (
 	"sync"
 	"time"
@@ -9,6 +8,7 @@ import (
 	echo "github.com/labstack/echo/v4"
 )
 
+//Request type is used to bind the request body to the handler
 type RequestType struct {
 	Text string `json:"text"`
 }
@@ -17,10 +17,9 @@ type Handler struct {
 	analyzer *govader.SentimentIntensityAnalyzer
 }
 
+// Handles get request with query parameter ?text=
+// Returns a JSON object with polarity scores
 func (h Handler) HandleGetRequest(c echo.Context) error {
-
-	// var request RequestType
-	// c.Bind(request)
 	text := c.QueryParam("text")
 	if text == "" {
 		return c.JSON(400, map[string]string{"error": "?text= parameter is required"})
@@ -29,6 +28,8 @@ func (h Handler) HandleGetRequest(c echo.Context) error {
 	return c.JSON(200, score)
 }
 
+// Handles post request with body parameter text=
+// Returns a JSON object with polarity scores
 func (h Handler) HandlePostRequest(c echo.Context) error {
 	request := new(RequestType)
 	c.Bind(request)
@@ -40,10 +41,20 @@ func (h Handler) HandlePostRequest(c echo.Context) error {
 	return c.JSON(200, score)
 }
 
+// Handles Health check for the server
 func (h Handler) HandleHealthCheck(c echo.Context) error {
 	return c.JSON(200, map[string]string{"status": "ok"})
 }
 
+// Serve function binds handler with given echo pointer
+// Starts the server on the given port
+// Sample usage:
+// 	e := echo.New()
+// 	err := Serve(e, "8080")
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	fmt.Scanln()
 func Serve(e *echo.Echo, portNumber string) error {
 	handler := Handler{
 		analyzer: govader.NewSentimentIntensityAnalyzer(),
