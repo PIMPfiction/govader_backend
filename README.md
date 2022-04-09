@@ -5,7 +5,8 @@
 [![codecov](https://codecov.io/gh/PIMPfiction/govader_backend/branch/master/graph/badge.svg?token=3KEBD30Q95)](https://codecov.io/gh/PIMPfiction/govader_backend)
 ![master](https://github.com/PIMPfiction/govader_backend/actions/workflows/tests.yml/badge.svg)
 
-Govader-Backend is based on GoVader Package[https://github.com/jonreiter/govader](https://github.com/jonreiter/govader)
+Govader-Backend is a microservice thats returns sentimental analysis of given sentence.
+Server wrapper for GoVader Package[https://github.com/jonreiter/govader](https://github.com/jonreiter/govader)
 
 
 ## Usage:
