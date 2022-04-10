@@ -19,14 +19,14 @@ go get github.com/PIMPfiction/govader_backend
 package main
 
 import (
-	"github.com/PIMPfiction/govader_backend"
+	vaderMicro "github.com/PIMPfiction/govader_backend"
 	echo "github.com/labstack/echo/v4"
 	"fmt"
 )
 
 func main() {
 	e := echo.New()
-	err := Serve(e, "8080")
+	err := vaderMicro.Serve(e, "8080")
 	if err != nil {
 		panic(err)
 	}
