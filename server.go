@@ -1,7 +1,7 @@
 package govader_backend
 
 import (
-	"sync"
+	"fmt"
 	"time"
 
 	"github.com/jonreiter/govader"
@@ -62,21 +62,21 @@ func Serve(e *echo.Echo, portNumber string) error {
 	e.GET("/", handler.HandleGetRequest)
 	e.POST("/", handler.HandlePostRequest)
 	e.GET("/health", handler.HandleHealthCheck)
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-	var errCh chan error
+	var errCh = make(chan bool, 1)
 	go func() {
 		err := e.Start(":" + portNumber)
 		if err != nil {
-			errCh <- err
-			wg.Done()
+			errCh <- false
 		}
 	}()
-	time.Sleep(3 * time.Second)
-	select {
-	case err := <-errCh:
-		return err
-	default:
-		return nil
+	go func() {
+		time.Sleep(time.Second * 3)
+		errCh <- true
+	}()
+	checkErr := <-errCh // blocks until either the server is started or the timeout is reached
+	if !checkErr {
+		return fmt.Errorf("\033[31m Port is already in use, Change Port\033[0m")
 	}
+	return nil
+
 }
