@@ -39,11 +39,22 @@ func main() {
 ```
 
 
-### Sample Get Request
+### Sample Get Request:
 
 #### GET: http://localhost:8080?text=I%20am%20looking%20good
 
-### Sample Post Request 
+### Sample Post Request:
 
 #### POST: http://localhost:8080/
-### RequestBody: ```{"text": "I am looking good"}```
+#### RequestBody: ```{"text": "I am looking good"}```
+
+
+### Sample Response 
+```json
+{
+  "Negative": 0,
+  "Neutral": 0.5084745762711864,
+  "Positive": 0.4915254237288135,
+  "Compound": 0.44043357076016854
+}
+```
