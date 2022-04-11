@@ -2,7 +2,11 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+    paths-ignore:
+      - '**/README.md'
+      - '**.yml'
 
 jobs:
   build:
