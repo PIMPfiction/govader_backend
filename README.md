@@ -1,4 +1,4 @@
-# Govader Backend Package
+# Govader Backend NLP Package (sentimental analysis NLP)
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/PIMPfiction/govader_backend.svg)](https://pkg.go.dev/github.com/PIMPfiction/govader_backend)
 [![Go Report Card](https://goreportcard.com/badge/github.com/PIMPfiction/govader_backend)](https://goreportcard.com/report/github.com/PIMPfiction/govader_backend)
